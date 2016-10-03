@@ -1,61 +1,59 @@
 package net.sparkworks.mapper.util;
 
 import com.sensorflare.io.SummaryFactory;
-import gr.cti.ru1.synfield.client.Synfield;
-import gr.cti.ru1.synfield.client.model.measurements.SynfieldMeasurement;
-import gr.cti.ru1.synfield.client.model.measurements.SynfieldMeasurementsPage;
-import gr.cti.ru1.synfield.client.model.sensors.SynfieldSensor;
+import net.sparkworks.mapper.netsens.Measurement;
+import net.sparkworks.mapper.netsens.Meter;
+import net.sparkworks.mapper.netsens.NetsensClient;
 import net.sparkworks.mapper.service.SenderService;
-import org.apache.commons.lang.WordUtils;
-import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 import javax.annotation.PostConstruct;
-import java.net.URL;
-import java.util.*;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
-public class SynfieldPollService {
+public class NetsensPollService {
     /**
      * LOGGER.
      */
-    private static final Logger LOGGER = Logger.getLogger(SynfieldPollService.class);
-
-    @Value("${synfield.username}")
-    private String synfieldUsername;
-    @Value("${synfield.password}")
-    private String synfieldPassword;
-    @Value("${synfield.devices}")
-    private String synfieldDevicesString;
-    @Value("${sparkworks.storage}")
-    private String sparkWorksStorage;
-
+    //private static final Logger LOGGER = Logger.getLogger(NetsensPollService.class);
+    //TODO Client for REST API
+    private final Set<String> synfieldDevices = new HashSet<>();
+    private final SummaryFactory sf = new SummaryFactory();
+    private final DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     @Autowired
     SenderService senderService;
 
-    private final Synfield synfield = new Synfield();
-    private final Set<String> synfieldDevices = new HashSet<>();
-    private final SummaryFactory sf = new SummaryFactory();
-
-    private final DateTimeFormatter dateStringFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-
+    //TODO Remove?
     @PostConstruct
     public void init() {
-        synfield.authenticate(synfieldUsername, synfieldPassword);
-        for (final String device : synfieldDevicesString.split(",")) {
-            synfieldDevices.add(device);
-        }
     }
 
-    @Scheduled(fixedDelay = 120000)
-    public void sendMeasurement() {
+    @Scheduled(fixedDelay = 100000) //TODO Set right request interval
+    public void sendMeasurement() throws ParserConfigurationException, IOException, SAXException {
 
+
+        //Request XML measurement
+        String URI = "http://192.168.9.41/prova.xml";
+        NetsensClient netsens = new NetsensClient(URI);
+        List<Meter> meters = netsens.getLastMeasurement();
+
+        for (Meter meter : meters) {
+            for (Measurement measurement : meter.getMeasurement()) {
+                System.out.println(meter.getId() + " " + measurement.getName() + " " + measurement.getValue());
+            }
+        }
+
+        /////
+        /*
         for (final String mac : synfieldDevices) {
             LOGGER.info("polling " + mac);
             try {
@@ -73,8 +71,8 @@ public class SynfieldPollService {
                     final String gateway = key.split("/")[0];
                     final String capability = key.split("/")[1];
                     if (uris.get(key) == 0) {
-                        final SynfieldMeasurementsPage measurementsForGateway = synfield.getMeasurements(mac);
-                        for (final SynfieldMeasurement synfieldMeasurement : measurementsForGateway.getResponse().getMeasurements()) {
+                        final SynfieldMeasurementsPage measurementsForGateway = synfield.getMeasurement(mac);
+                        for (final SynfieldMeasurement synfieldMeasurement : measurementsForGateway.getResponse().getMeasurement()) {
                             if (synfieldMeasurement.getService().toLowerCase().endsWith(capability.toLowerCase())) {
                                 send(gateway, capability, synfieldMeasurement.getDoubleValue(), dateStringFormat.parseMillis(synfieldMeasurement.getTimestamp()));
                             }
@@ -83,10 +81,10 @@ public class SynfieldPollService {
                     } else {
                         final DateTime then = new DateTime(uris.get(key));
                         final DateTime now = new DateTime();
-                        final SynfieldMeasurementsPage measurementsForGateway = synfield.getMeasurements(mac,
+                        final SynfieldMeasurementsPage measurementsForGateway = synfield.getMeasurement(mac,
                                 then.getYear() + "-" + then.getMonthOfYear() + "-" + then.getDayOfMonth()
                                 , now.getYear() + "-" + now.getMonthOfYear() + "-" + now.getDayOfMonth());
-                        for (final SynfieldMeasurement synfieldMeasurement : measurementsForGateway.getResponse().getMeasurements()) {
+                        for (final SynfieldMeasurement synfieldMeasurement : measurementsForGateway.getResponse().getMeasurement()) {
                             if (synfieldMeasurement.getService().toLowerCase().endsWith(capability.toLowerCase())) {
                                 final DateTime measurementTime = new DateTime(dateStringFormat.parseMillis(synfieldMeasurement.getTimestamp()));
                                 if (measurementTime.isAfter(then)) {
@@ -100,6 +98,7 @@ public class SynfieldPollService {
                 LOGGER.error(e, e);
             }
         }
+*/
     }
 
     private void send(String gateway, String capability, double doubleValue, long timestamp) {
