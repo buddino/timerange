@@ -1,19 +1,16 @@
 rabbitmq:
-  server: 192.168.9.33
+  server: broker.sparkworks.net
   port: 5672
-  username: guest
-  password: guest
+  username: CNIT
+  password: 1b405820-99cf-4b06-8777-45b54b605d35
   queue:
     send: ${rabbitmq.username}-send
     receive: ${rabbitmq.username}-receive
 
 netsens:
-  url: www.live.netsens.it/export/xml_export_2A.php
+  url: https://live.netsens.it/export/xml_export_2A.php
   username: cnit
   password: cnit_pwd
   station: 723
-
-synfield:
-  username: username
-  password: password
-  devices:  a,b,c,d
+  meter: last_reading
+  baseURI: gaia-prato/gw1

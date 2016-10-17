@@ -4,25 +4,28 @@ package net.sparkworks.mapper.netsens;
  * Created by cuffaro on 04/10/2016.
  */
 public class MeasureMapper {
-    String newName;
-    Double scaleFactor;
-    String measuringUnit;
+    Measure measure;
+    String prefix;
+    String id;
 
-    public MeasureMapper(String newName, Double scaleFactor, String measuringUnit) {
-        this.newName = newName;
-        this.scaleFactor = scaleFactor;
-        this.measuringUnit = measuringUnit;
+    public MeasureMapper(Measure measure, String prefix) {
+        this.measure = measure;
+        this.prefix = prefix;
+        this.id = "";
     }
 
-    public String getNewName() {
-        return newName;
+    public MeasureMapper(Measure measure, String prefix, int id) {
+        this.measure = measure;
+        this.prefix = prefix;
+        this.id = "/" + id;
     }
 
-    public Double getScaleFactor() {
-        return scaleFactor;
+    public String getName() {
+        return prefix + "/" + measure.getEncodedName() + id;
     }
 
-    public String getMeasuringUnit() {
-        return measuringUnit;
+    public double getScaleFactor() {
+        return measure.getScaleFactor();
     }
+
 }

@@ -1,5 +1,6 @@
 package net.sparkworks.mapper.configuration;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,9 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 @Configuration
 @PropertySource("classpath:application.yml")
 public class RabbitConfiguration {
+
+    private static final Logger LOGGER = Logger.getLogger(RabbitConfiguration.class);
 
     @Value("${rabbitmq.server}")
     String rabbitServer;
@@ -21,7 +27,7 @@ public class RabbitConfiguration {
     String rabbitPassword;
 
     @Bean
-    ConnectionFactory connectionFactory() {
+    ConnectionFactory connectionFactory() throws KeyManagementException, NoSuchAlgorithmException {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(rabbitServer);
         connectionFactory.setPort(Integer.parseInt(rabbitPort));
         connectionFactory.setUsername(rabbitUser);
