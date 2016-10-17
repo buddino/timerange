@@ -1,3 +1,3 @@
-# Device API Mapper for Synfield devices
+# Device API Mapper for Netsens cloud
 
-based on [SparkWorks Device Mapper](https://github.com/SparkWorksnet/device-mapper-template)
+based on [SparkWorks Device Mapper](https://github.com/SparkWorksnet/device-measureMapper-template)

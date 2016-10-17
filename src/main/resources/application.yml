@@ -1,11 +1,17 @@
 rabbitmq:
-  server: localhost
+  server: 192.168.9.33
   port: 5672
   username: guest
   password: guest
   queue:
     send: ${rabbitmq.username}-send
     receive: ${rabbitmq.username}-receive
+
+netsens:
+  url: www.live.netsens.it/export/xml_export_2A.php
+  username: cnit
+  password: cnit_pwd
+  station: 723
 
 synfield:
   username: username
