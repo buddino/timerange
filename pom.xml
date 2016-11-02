@@ -8,10 +8,9 @@
     <groupId>net.sparkworks</groupId>
     <artifactId>device-measureMapper-template</artifactId>
     <packaging>jar</packaging>
-    <name>SparkWorks Device Mapper Template</name>
-    <description>A template application used to integrate devices with SparkWorks IoT Analytics Engine</description>
+    <name>SparkWorks Device Mapper</name>
+    <description>Netsens API-Mapper</description>
     <version>1.0-SNAPSHOT</version>
-
     <properties>
         <!-- use UTF-8 for everything -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,11 +68,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>gr.cti.ru1</groupId>
-            <artifactId>synfield-api</artifactId>
         </dependency>
 
         <dependency>

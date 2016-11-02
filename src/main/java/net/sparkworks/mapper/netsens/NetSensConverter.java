@@ -20,7 +20,7 @@ public class NetSensConverter {
     private Measure activePower = new Measure("actp", "mW", 10.0);
     private Measure reactivePower = new Measure("reactp", "mVAR", 10.0);
     private Measure apparentPower = new Measure("appp", "mVA", 10.0);
-    private Measure powerfactor = new Measure("pf", "", 10.0);
+    private Measure powerfactor = new Measure("pf", "", 0.001);
     private Measure activeEnergy = new Measure("actcon", "mWh", 10.0);
     private Measure reactiveEnergy = new Measure("reactcon", "mVARh", 10.0);
     private Measure apparentEnergy = new Measure("appcon", "mVAh", 10.0);
@@ -97,6 +97,29 @@ public class NetSensConverter {
         meterMap.put("Hall-Lighting-ActiveEnergy", new MeasureMapper(activeEnergy, hall));
         meterMap.put("Hall-Lighting-PowerFactor", new MeasureMapper(powerfactor, hall));
 
+        String QG = "QG";
+        meterMap.put("QG - Current 1", new MeasureMapper(current, QG, 1));
+        meterMap.put("QG - Current 2", new MeasureMapper(current, QG, 2));
+        meterMap.put("QG - Current 3", new MeasureMapper(current, QG, 3));
+        meterMap.put("QG - Power Factor", new MeasureMapper(powerfactor, QG));
+        meterMap.put("QG - Active Power", new MeasureMapper(activePower, QG));
+        meterMap.put("QG - Reactive Power", new MeasureMapper(reactivePower, QG));
+        meterMap.put("QG - Apparent Power", new MeasureMapper(apparentPower, QG));
+        meterMap.put("QG - Active Energy", new MeasureMapper(activeEnergy, QG));
+        meterMap.put("QG - Apparent Energy", new MeasureMapper(apparentEnergy, QG));
+        meterMap.put("QG - Reactive Energy", new MeasureMapper(reactiveEnergy, QG));
+
+        String QS = "QS";
+        meterMap.put("QS - Current 1", new MeasureMapper(current, QS, 1));
+        meterMap.put("QS - Current 2", new MeasureMapper(current, QS, 2));
+        meterMap.put("QS - Current 3", new MeasureMapper(current, QS, 3));
+        meterMap.put("QS - Power Factor", new MeasureMapper(powerfactor, QS));
+        meterMap.put("QS - Active Power", new MeasureMapper(activePower, QS));
+        meterMap.put("QS - Reactive Power", new MeasureMapper(reactivePower, QS));
+        meterMap.put("QS - Apparent Power", new MeasureMapper(apparentPower, QS));
+        meterMap.put("QS - Active Energy", new MeasureMapper(activeEnergy, QS));
+        meterMap.put("QS - Apparent Energy", new MeasureMapper(apparentEnergy, QS));
+        meterMap.put("QS - Reactive Energy", new MeasureMapper(reactiveEnergy, QS));
         //TODO QG and QS from the Cabinet
     }
 
@@ -121,8 +144,13 @@ public class NetSensConverter {
      */
 
     public double getValue(String meterName, double value) {
-        MeasureMapper measureMapper = meterMap.get(meterName);
-        return measureMapper.getScaleFactor() * value;
+        if (meterMap.containsKey(meterName)) {
+            MeasureMapper measureMapper = meterMap.get(meterName);
+            return measureMapper.getScaleFactor() * value;
+        } else {
+            System.err.println("\"" + meterName + "\" not found");
+            return 0.0;
+        }
     }
 
     //TODO Timestamp converter?

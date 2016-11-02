@@ -12,7 +12,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 @Configuration
-@PropertySource("classpath:application.yml")
+@PropertySource("application.yml")
 public class RabbitConfiguration {
 
     private static final Logger LOGGER = Logger.getLogger(RabbitConfiguration.class);

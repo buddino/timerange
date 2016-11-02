@@ -2,13 +2,13 @@ rabbitmq:
   server: broker.sparkworks.net
   port: 5672
   username: CNIT
-  password: 1b405820-99cf-4b06-8777-45b54b605d35
+  password: c9ce97aa-3b71-446e-b3f4-f7130dfddb32
   queue:
     send: ${rabbitmq.username}-send
     receive: ${rabbitmq.username}-receive
 
 netsens:
-  url: https://live.netsens.it/export/xml_export_2A.php
+  url: http://live.netsens.it/export/xml_export_2A.php
   username: cnit
   password: cnit_pwd
   station: 723

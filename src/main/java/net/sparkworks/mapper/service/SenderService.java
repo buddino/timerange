@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 public class SenderService {
     /**
@@ -25,7 +27,8 @@ public class SenderService {
     
     @Async
     public void sendMeasurement(final String uri, final Double reading, final long timestamp) {
-        final String message = String.format(MESSAGE_TEMPLATE, uri, reading, timestamp);
+        final String message = String.format(Locale.US, MESSAGE_TEMPLATE, uri, reading, timestamp);
         rabbitTemplate.send(rabbitQueueSend, rabbitQueueSend, new Message(message.getBytes(), new MessageProperties()));
+        System.out.println(message.toString());
     }
 }

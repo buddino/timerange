@@ -46,26 +46,23 @@ public class NetsensPollService {
         System.setProperty("jsse.enableSNIExtension", "false");
     }
 
-    @Scheduled(fixedDelay = 300000) //TODO Set right request interval
+    @Scheduled(fixedDelay = 30000) //TODO Set right request interval
     public void sendMeasurement() throws ParserConfigurationException, IOException, SAXException {
         Date now = new Date();
         LOGGER.info("Request: " + now.getTime());
         final String webserviceURI = url + "?user=" + username + "&password=" + password + "&station=" + station + "&meter=" + meter;
         System.out.println("URL: " + webserviceURI);
         NetsensClient netsens = new NetsensClient(webserviceURI);
-
-
-        //DEBUG
         List<Meter> meterList = netsens.getLastMeasurement();
+        System.out.print("Start sending to the queue...");
         for (Meter meter : meterList) {
             double value = netSensConverter.getValue(meter.getId(), Double.parseDouble(meter.getValue()));
-            long timestamp = Long.parseLong(meter.getTimestamp());
+            long timestamp = Long.parseLong(meter.getTimestamp()) / 1000;
             String meterURI = netSensConverter.getURI(meter.getId());
             //System.out.println(meterURI+"\t"+value+"\t"+timestamp);
-            System.out.print(".");
             send(meterURI, value, timestamp);
         }
-        System.out.println("DONE");
+        System.out.println("Done");
 
 
     }
