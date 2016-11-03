@@ -27,7 +27,7 @@ public class NetsensClient {
         unmarshaller.setClassesToBeBound(Meter.class, Measurement.class, Meters.class);
     }
 
-    public List<Meter> getLastMeasurement() {
+    public List<Meter> getMeasurement() {
         String result = restTemplate.getForObject(endpoint, String.class);
         StringReader stringReader = new StringReader(result);
         StreamSource streamSource = new StreamSource(stringReader);

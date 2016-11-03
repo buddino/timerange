@@ -14,3 +14,11 @@ netsens:
   station: 723
   meter: last_reading
   baseURI: gaia-prato/gw1
+
+meters:
+  - QG/Lighting
+  - Geom/GF/
+  - Geom/1F
+  - Geom/GF/Labs/MP
+  - Geom/GF/Labs/Lighting
+  - Geom/1F/Rooms/Lighting
